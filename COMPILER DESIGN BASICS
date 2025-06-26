@@ -1,0 +1,194 @@
+
+#include <stdio.h>
+
+#include <string.h>
+
+#include <ctype.h>
+
+
+
+char keywords[32][10] = {
+
+    "int", "float", "if", "else", "while", "do", "return", "void",
+
+    "for", "char", "double", "long", "short", "unsigned", "signed",
+
+    "const", "static", "struct", "union", "typedef", "enum", "goto",
+
+    "switch", "case", "default", "break", "continue", "sizeof",
+
+    "volatile", "register", "extern", "auto"
+
+};
+
+
+
+// Check if token is a keyword
+
+int isKeyword(char *str) {
+
+    for (int i = 0; i < 32; i++) {
+
+        if (strcmp(str, keywords[i]) == 0)
+
+            return 1;
+
+    }
+
+    return 0;
+
+}
+
+
+
+// Check if character is an operator
+
+int isOperator(char ch) {
+
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || 
+
+            ch == '=' || ch == '<' || ch == '>' || ch == '!');
+
+}
+
+
+
+int main() {
+
+    char ch, str[100];
+
+    FILE *fp;
+
+    int i;
+
+
+
+    fp = fopen("input.txt", "r");
+
+    if (fp == NULL) {
+
+        printf("Cannot open file.\n");
+
+        return 1;
+
+    }
+
+
+
+    while ((ch = fgetc(fp)) != EOF) {
+
+        i = 0;
+
+
+
+        // If character is a letter or underscore, it's part of an identifier or keyword
+
+        if (isalpha(ch) || ch == '_') {
+
+            str[i++] = ch;
+
+            while ((ch = fgetc(fp)) != EOF && (isalnum(ch) || ch == '_')) {
+
+                str[i++] = ch;
+
+            }
+
+            str[i] = '\0';
+
+            if (isKeyword(str))
+
+                printf("%s --> Keyword\n", str);
+
+            else
+
+                printf("%s --> Identifier\n", str);
+
+
+
+            // Return last read character back to stream
+
+            ungetc(ch, fp);
+
+        }
+
+
+
+        // Check for operators
+
+        else if (isOperator(ch)) {
+
+            char next = fgetc(fp);
+
+            if ((ch == '=' && next == '=') || 
+
+                (ch == '!' && next == '=') ||
+
+                (ch == '<' && next == '=') || 
+
+                (ch == '>' && next == '=')) {
+
+                printf("%c%c --> Operator\n", ch, next);
+
+            } else {
+
+                ungetc(next, fp);
+
+                printf("%c --> Operator\n", ch);
+
+            }
+
+        }
+
+
+
+        // Ignore whitespace and newlines
+
+        else if (isspace(ch)) {
+
+            continue;
+
+        }
+
+
+
+        // Handle numbers
+
+        else if (isdigit(ch)) {
+
+            str[i++] = ch;
+
+            while ((ch = fgetc(fp)) != EOF && isdigit(ch)) {
+
+                str[i++] = ch;
+
+            }
+
+            str[i] = '\0';
+
+            printf("%s --> Number\n", str);
+
+            ungetc(ch, fp);
+
+        }
+
+
+
+        // Handle other characters (brackets, semicolons, etc.)
+
+        else {
+
+            if (ch != ' ' && ch != '\n')
+
+                printf("%c --> Symbol\n", ch);
+
+        }
+
+    }
+
+
+
+    fclose(fp);
+
+    return 0;
+
+}
