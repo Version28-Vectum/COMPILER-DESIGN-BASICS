@@ -81,3 +81,5 @@ Whitespace and Delimiters: Accurately handling spaces, tabs, and line breaks was
 Conclusion:
 
 Building a lexical analyzer gave me a solid understanding of the front-end architecture of compilers. This task helped me get hands-on experience with file handling, string processing, and token classification in C. Using YouTube tutorials, Grok AI practice, and ChatGPT support, I was able to build an efficient program that demonstrates the basics of compiler design. This project also opened the door to further compiler concepts like parsing, syntax analysis, and code generation.
+OUTPUT
+![Image](https://github.com/user-attachments/assets/3efc245b-8057-4217-afac-8d8c4dc38444)
